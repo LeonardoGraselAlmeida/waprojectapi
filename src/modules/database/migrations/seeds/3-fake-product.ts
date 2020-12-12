@@ -5,6 +5,11 @@ import { IS_DEV } from 'settings';
 
 export async function seed(knex: Knex): Promise<void> {
   if (!IS_DEV) return;
+
+  const listProducts = await knex.select().from('Product');
+
+  if (listProducts.length != 0) return;
+
   for (let x = 0; x < 10; x++) {
     const product: IProduct = {
       description: faker.commerce.product(),
