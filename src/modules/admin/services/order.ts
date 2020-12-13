@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { IOrder } from 'modules/database/interfaces/order';
+import { IOrder, enStatus } from 'modules/database/interfaces/order';
 import { Order } from 'modules/database/models/order';
 import { Page } from 'objection';
 
@@ -28,6 +28,18 @@ export class OrderService {
   public async save(model: IOrder): Promise<Order> {
     if (model.id) return this.update(model);
     return this.create(model);
+  }
+
+  public async cancel(orderId: number): Promise<Order> {
+    const order = await this.orderRepository.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundException('not-found');
+    }
+
+    order.status = enStatus.canceled;
+
+    return this.update(order);
   }
 
   private async create(model: IOrder): Promise<Order> {

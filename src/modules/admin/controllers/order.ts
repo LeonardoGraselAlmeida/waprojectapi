@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthRequired } from 'modules/common/guards/token';
 import { Order } from 'modules/database/models/order';
@@ -23,6 +23,12 @@ export class OrderController {
   @ApiResponse({ status: 200, type: Order })
   public async details(@Param('orderId', ParseIntPipe) orderId: number) {
     return this.orderService.findById(orderId);
+  }
+
+  @Patch(':orderId/cancel')
+  @ApiResponse({ status: 200, type: Order })
+  public async cancel(@Param('orderId', ParseIntPipe) orderId: number) {
+    return this.orderService.cancel(orderId);
   }
 
   @Post()
